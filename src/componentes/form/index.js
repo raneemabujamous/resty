@@ -1,5 +1,5 @@
 import React from "react";
-import "./Form.scss";
+import "./form.scss";
 
 function Form(props) {
   const handleSubmit = (e) => {
