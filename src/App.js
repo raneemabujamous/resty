@@ -15,29 +15,37 @@ class App extends React.Component {
     this.state = {
       data: null,
       requestParams: {},
+      // load: false,
     };
   }
 
-  callApi = (requestParams) => {
-    // mock output
-    const data = {
-      count: 2,
-      results: [
-        { name: "fake thing 1", url: "http://fakethings.com/1" },
-        { name: "fake thing 2", url: "http://fakethings.com/2" },
-      ],
-    };
-    this.setState({ data, requestParams });
+  callApi = (formData, updateText, responseData) => {
+    this.setState({
+      data: responseData,
+      requestParams: formData,
+    });
+    console.log("data after set", this.state.data);
   };
 
+  // handleLoad(load) {
+  //   this.setState({
+  //     load: load,
+  //   });
+  // }
   render() {
     return (
       <React.Fragment>
         <Header />
-        <div>Request Method: {this.state.requestParams.method}</div>
+        <div data-testid="Method">
+          Request Method: {this.state.requestParams.method}
+        </div>
         <div>URL: {this.state.requestParams.url}</div>
-        <Form handleApiCall={this.callApi} />
+        <Form handleLoad={this.handleLoad} handleApiCall={this.callApi} />
+        {/* {this.state.load ? (
+          <BeatLoader load />
+        ) : ( */}
         <Results data={this.state.data} />
+        {/* )} */}
         <Footer />
       </React.Fragment>
     );
