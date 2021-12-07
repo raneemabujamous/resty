@@ -1,4 +1,5 @@
 import React from "react";
+import { useState, useEffect } from "react";
 
 import "./app.scss";
 
@@ -9,47 +10,33 @@ import Footer from "./componentes/footer";
 import Form from "./componentes/form";
 import Results from "./componentes/results";
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      data: null,
-      requestParams: {},
-      // load: false,
+function App() {
+  const [data, setData] = useState(null);
+  const [requestParams, setRequest] = useState({});
+
+  async function callApi(requestParams) {
+    setRequest(requestParams);
+  }
+  useEffect(() => {
+    fetch(requestParams.url)
+      .then((res) => res.json())
+      .then((data) => setData(data));
+    console.log("is updated");
+    return () => {
+      console.log("cleanup");
     };
-  }
+  }, [requestParams]);
 
-  callApi = (formData, updateText, responseData) => {
-    this.setState({
-      data: responseData,
-      requestParams: formData,
-    });
-    console.log("data after set", this.state.data);
-  };
-
-  // handleLoad(load) {
-  //   this.setState({
-  //     load: load,
-  //   });
-  // }
-  render() {
-    return (
-      <React.Fragment>
-        <Header />
-        <div data-testid="Method">
-          Request Method: {this.state.requestParams.method}
-        </div>
-        <div>URL: {this.state.requestParams.url}</div>
-        <Form handleLoad={this.handleLoad} handleApiCall={this.callApi} />
-        {/* {this.state.load ? (
-          <BeatLoader load />
-        ) : ( */}
-        <Results data={this.state.data} />
-        {/* )} */}
-        <Footer />
-      </React.Fragment>
-    );
-  }
+  return (
+    <React.Fragment>
+      <Header />
+      <div data-testid="Method">Request Method: {requestParams.method}</div>
+      <div>URL: {requestParams.url}</div>
+      <Form handleApiCall={callApi} />
+      <Results data={data} />
+      <Footer />
+    </React.Fragment>
+  );
 }
 
 export default App;
